@@ -46,6 +46,13 @@ def _are_windows_closed(
         extra_attributes[window.name] = window.state.value
     return not vehicle.doors_and_windows.all_windows_closed
 
+def _are_roof_closed(
+    vehicle: MyBMWVehicle, extra_attributes: dict[str, Any], *args: Any
+) -> bool:
+    # device class opening: On means open, Off means closed
+    
+    return not vehicle.doors_and_windows.roof_closed
+
 
 def _are_doors_locked(
     vehicle: MyBMWVehicle, extra_attributes: dict[str, Any], *args: Any
@@ -154,6 +161,15 @@ SENSOR_TYPES: tuple[BMWBinarySensorEntityDescription, ...] = (
         device_class=BinarySensorDeviceClass.OPENING,
         icon="mdi:car-door",
         value_fn=_are_windows_closed,
+    ),
+    BMWBinarySensorEntityDescription(
+        key="roof",
+        name="Roof",
+        device_class=BinarySensorDeviceClass.OPENING,
+        icon="mdi:car-convertible",
+        # device class opening: On means open, Off means closed
+        value_fn=_are_roof_closed,
+        
     ),
     BMWBinarySensorEntityDescription(
         key="door_lock_state",
